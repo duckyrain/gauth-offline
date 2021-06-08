@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><title>身份验证器（离线版）</title></head>
-<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="./key.txt"></script>
-<style scoped>
+<style>
     .layout {border: 1px solid #d7dde4;background: #f5f7f9;position: relative;border-radius: 4px;}
     .layout .header {background: #515a6e;padding: 0 50px;height: 50px;line-height: 50px;color: #fff;font-size: 15px;text-align: center;}
     .layout .readme {background: #dddddd; font-size:12px; padding:5px 10px}
@@ -16,8 +15,8 @@
     <div class="readme">
         <p>使用说明：同级目录创建key.txt文件，按下面格式添加name和token，刷新页面即可。<br>(name: 自定义应用描述, token: 平台或系统为你生成的token)</p>
         <div class="sourceCode" id="cb1"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> data <span class="op">=</span> [</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    {<span class="st">&quot;name&quot;</span><span class="op">:</span> <span class="st">&quot;app1&quot;</span><span class="op">,</span> <span class="st">&quot;token&quot;</span><span class="op">:</span> <span class="st">&quot;HAYEAQBTIBCDAQBS&quot;</span>}<span class="op">,</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    {<span class="st">&quot;name&quot;</span><span class="op">:</span> <span class="st">&quot;app2&quot;</span><span class="op">,</span> <span class="st">&quot;token&quot;</span><span class="op">:</span> <span class="st">&quot;2OFF4KERDFYSU3KW&quot;</span>}<span class="op">,</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    {<span class="st">&quot;name&quot;</span><span class="op">:</span> <span class="st">&quot;VPN&quot;</span><span class="op">,</span> <span class="st">&quot;token&quot;</span><span class="op">:</span> <span class="st">&quot;HAYEAQBTIBCDAQBS&quot;</span>}<span class="op">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    {<span class="st">&quot;name&quot;</span><span class="op">:</span> <span class="st">&quot;JumperServer&quot;</span><span class="op">,</span> <span class="st">&quot;token&quot;</span><span class="op">:</span> <span class="st">&quot;2OFF4KERDFYSU3KW&quot;</span>}<span class="op">,</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    {<span class="st">&quot;name&quot;</span><span class="op">:</span> <span class="st">&quot;&quot;</span><span class="op">,</span> <span class="st">&quot;token&quot;</span><span class="op">:</span> <span class="st">&quot;&quot;</span>}<span class="op">,</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div>
         </div>
@@ -31,6 +30,6 @@
     function base32ToHex(base32) {let base32chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";let bits = "";let hex = "";for (let i = 0; i < base32.length; i++) {let val = base32chars.indexOf(base32.charAt(i).toUpperCase());bits += leftPad(val.toString(2), 5, '0');}for (let i = 0; i + 4 <= bits.length; i += 4) {let chunk = bits.substr(i, 4);hex = hex + parseInt(chunk, 2).toString(16);}return hex;}
     function leftPad(str, len, pad) {if (len + 1 >= str.length) {str = new Array(len + 1 - str.length).join(pad) + str;}return str;}
     function generate(secret, epoch) {let key = base32ToHex(secret);if (key.length % 2 !== 0) {key += '0';}if(typeof epoch === 'undefined') {epoch = Math.round(new Date().getTime() / 1000.0);}let time = leftPad(dec2hex(Math.floor(epoch / 30)), 16, '0');let hmacObj = new jsSHA(time, "HEX");let hmac = hmacObj.getHMAC(key, "HEX", "SHA-1", "HEX");let offset = 0;if (hmac !== 'KEY MUST BE IN BYTE INCREMENTS') {offset = hex2dec(hmac.substring(hmac.length - 1));}let otp = (hex2dec(hmac.substr(offset * 2, 8)) & hex2dec('7fffffff')) + '';return (otp).substr(otp.length - 6, 6).toString();}
-    function refresh() {$("#app").empty();for (let i = 0; i < data.length; ++i) {if (data[i].token === "") {continue}$("#app").append("<li>" + data[i].name + ": " +  generate(data[i].token) + " </li>")}}
+    function refresh() {document.getElementById("app").innerHTML = ""for (let i = 0; i < data.length; ++i) {if (data[i].token === "") {continue}let node = document.createElement("li");node.appendChild(document.createTextNode(data[i].name + ": " + generate(data[i].token)));document.getElementById("app").appendChild(node);}}
 </script>
 </html>
