@@ -4,10 +4,10 @@
 
 *name: 应用别名 token: 应用为你生成的token*
 
-```bash
+```js
 const data = [
    {"name": "app1", "token": "HAYEAQBTIBCDAQBS"},
    {"name": "app2", "token": "2OFF4KERDFYSU3KW"},
    {"name": "", "token": ""},
- ]
+]
 ```
